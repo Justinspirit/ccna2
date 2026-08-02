@@ -80,7 +80,59 @@ ip add dhcp
 no shut
 
 
-CAB
+CAB - Change Advisory Board
+
+
+caltexph.com 10.0.0.0/8 8500h
+C: 14 bits
+S: /32-14=/18
+I: 3rd 64i
+URS: 10.0.64.0/18
+1st: 10.0.64.1
+LaIP: 10.0.127.255
+NOTurs: 10.0.128.0/?
+
+TASK 8 : IMPLEMENTING THE DESIGN: PHOENIXINC.COM
+D1/C1:
+
+config t
+vlan 8
+name CALTEXINC.COM
+Interface vlan 8
+ desc CALTEXINC.COM
+ no shut
+ ip add 10.0.64.1 255.255.192.0
+ip dhcp excluded-add 10.0.64.1 10.0.67.50
+ip dhcp pool CALTEXINC.COM
+ network 10.0.64.0 255.255.192.0
+ default-router 10.0.64.1
+ domain-name CALTEXINC.COM
+end
+
+C2sw:
+conf t
+int e1/0
+switchport mode access
+switchport access vlan 8
+do sh vlan brief
+
+P2: petronPC: p
+conf t
+int e1/0
+ip add dhcp 
+no shut
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
