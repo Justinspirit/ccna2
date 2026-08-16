@@ -1,0 +1,113 @@
+@S1 
+conf t
+int e1/0
+ ip add	192.168.1.131 255.255.255.224 
+ no shut
+ end
+bp
+
+
+
+
+
+connect S1/S2 to C1/C2 (D1/D2)
+
+conf t
+ int e1/0
+ switch access vlan 100
+ end
+
+
+S1 
+ ip route 0.0.0.0 0.0.0.0 192.168.1.129 1
+ ip route 0.0.0.0 0.0.0.0 192.168.1.130 2
+end
+
+
+S2
+ ip route 10.2.1.1 255.255.255.255 192.168.1.130
+ ip route 10.2.1.0 255.255.255.224 192.168.1.129
+end
+bp
+
+
+
+VLAN 10
+
+Dynamic Routing
+
+set DHCP server for D1/D2
+D1
+conf t
+ ip dhcp excluded-address 10.2.1.1 10.2.1.99
+ ip dhcp excluded-address 10.2.1.200 10.2.1.254
+ ip dhcp pool vlan10
+   network 10.2.1.0 255.255.255.0
+   default-router 10.2.1.254
+end
+
+A1 
+ conf t
+ int e0/0
+ switchport mode access
+ switchport access vlan 10
+end
+
+P1
+ conf t
+ int e0/0
+ ip add dhcp
+ no shut
+end
+
+
+
+VLAN 20:
+
+D2
+conf t
+ ip dhcp excluded-address 10.2.2.1 10.2.2.99
+ ip dhcp excluded-address 10.2.2.200 10.2.2.254
+ ip dhcp pool vlan20
+   network 10.2.2.0 255.255.255.0
+   default-router 10.2.2.254
+end
+
+A2 
+ conf t
+ int e1/0
+ switchport mode access
+ switchport access vlan 20
+end
+
+P2
+ conf t
+ int e1/0
+ ip add dhcp
+ no shut
+end
+
+
+D1/C1
+conf t
+ router eigrp 100
+ no auto-summary
+ network 10.1.4.4
+ network 10.2.1.0
+ network 10.2.2.0
+ network 192.168.1.128
+
+
+D2/C2
+conf t
+ router eigrp 100
+ no auto-summary
+ network 10.1.4.8
+ network 10.2.1.0
+ network 10.2.2.0
+ network 192.168.1.128
+
+
+
+
+
