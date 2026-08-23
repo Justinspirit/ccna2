@@ -9,7 +9,8 @@
 
 L1/Techsupport/CSR: 35k below:
 http://msp.rivannoc.com/otrs/customer.pl
-
+user
+C1sc0123
 
 l3/L4 SENIOR NETWORK ENGINEER:
 http://msp.rivannoc.com/otrs/index.pl
