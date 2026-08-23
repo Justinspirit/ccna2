@@ -1,0 +1,124 @@
+config t
+int Gi 3
+ no shut
+ ip add 192.168.103.11 255.255.255.0
+ ip add 192.168.103.10 255.255.255.0 Secondary
+service finger
+service tcp-small-servers
+service udp-small-servers
+ip dns server
+ip http server
+ip http secure-server
+telephony-service
+max-ephone 2
+max-dn 4
+ip source-address 192.168.103.11 port 2000
+voice service voip
+ allow-connections sip to sip
+ sip
+   registrar server expires max 600 min 60
+ voice register global
+  mode cme
+  source-address 192.168.103.11 port 5060
+  max-dn 12
+  max-pool 12
+!Make Ping EASY
+ip host bet10.com 192.168.103.10
+ip host bet11.com 192.168.103.11
+
+
+BLDG2: 192.168.102.102
+BLGD3: 192.168.102.103
+
+config t
+int gi 1
+ip nat OUTSIDE
+int gi 2
+ip nat INSIDE
+int gi 3
+ip nat INSIDE
+no access-list 8
+access-list 8 permit 192.168.102.22 0.0.0.0
+access-list 8 permit 192.168.103.23 0.0.0.0
+ip nat inside source list 8 interface Gi 1 overload
+ip nat inside source static 192.168.103.22 208.8.8.122
+
+end
+sho ip nat translation
+
+BLGD2:
+ping 8.8.8.8
+ping 1.1.1.1
+
+
+BLGD3:
+ping 4.2.2.2
+ping 208.67.222.222
+
+realipaddress:                              proxy:
+bet10.com 192.168.102.10: 80             betlog.com 208.8.8.69: 80
+bet10.com 192.168.102.10: 443            betlog.com 208.8.8.69: 8443
+
+bet11.com 192.168.102.11: 80             betlog.com 208.8.8.69: 443
+bet11.com 192.168.102.11: 443            betlog.com 208.8.8.69: 8080
+
+
+KILL NAT replace with NAT+PAT
+config t
+int gi 1
+ip nat OUTSIDE
+
+int gi 3
+ip nat INSIDE
+end
+sh ip nat trans
+
+
+Setp 2: NAT and PAT
+config t
+no access-list 8
+access-list 8 permit host 192.168.103.10
+access-list 8 permit host 192.168.103.11
+ip host betlog.com 208.8.8.69
+Int Gi 3
+ ip nat Inside
+Int gi 1
+ ip nat Outside
+IP Nat inside source static tcp 192.168.103.10 80 208.8.8.69 80
+IP Nat inside source static tcp 192.168.103.10 443 208.8.8.69 443
+IP Nat inside source static tcp 192.168.103.11 80 208.8.8.69 8080
+IP Nat inside source static tcp 192.168.103.11 443 208.8.8.69 8443
+IP nat inside source list 8 int gi 1 Overload
+end
+show ip nat translation
+
+
+
+TASK 9: LAB 1 NTP
+Synchronize time with USA time
+
+nmap -sU time.google.com
+
+config t
+no access-list 101
+access-list 101 permit udp host 216.239.35.0 any eq 123
+int gi 3
+ip access-group 101 in
+ntp server time.google.com
+end
+sh ntp assoc
+sh ntp status
+show ntp associations detail
+
+
+lab2: configuring CIAtriad/threesome: Confidentiality, Integrity, Availability:
+   configure using a Public-key.
+
+!create a publicKey: keykeymo
+config t
+ip domain name keykeymo
+crypto key generate rsa modulus 1024
+ip ssh version 2
+end
+show ip ssh
+

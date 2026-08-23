@@ -1,0 +1,228 @@
+FW-VPN
+Firewall1k
+
+
+Network Engineer
+Security Engineer
+SOC analyst
+
+
+USING 7 OSI LAYER TO PENETRATE SOMEONE = classmate.
+
+Physical LAYER 1:
+how to get the password of a known wifi: 
+
+netsh wlan show profile name = "3F-Rivan" key =clear
+
+Free wifi = bobo
+
+Data Link LAYER 2: MAC Address
+
+NETWORK LAYER 3: 
+
+nmap -sP 10.3.3.0/24
+
+
+LAYER 4:
+port 139: para makuha lahat ng pictures 
+port 445: 
+
+nmap -v 10.3.3.100+m 
+
+LAYER 5: 
+Netbios
+
+netbios-ssn
+ipc: 
+net use \\10.3.3.100+m\ipc$
+
+LAYER 6:
+
+LAYER 7: 
+explorer.exe
+net use x: /delete
+net use x: \\10.3.3.100+m\c$
+
+
+
+task2: WHY ARE YOU SO EASILY HACKED? "SASAE"
+
+tcp.flags.syn == 1 && tcp.flags.ack == 0
+
+THREE WAY HANDSHAKE
+
+LOCAL                  FOREIGN:
+10.3.3.ME            10.3.3.HACKER:
+      <----------SYN-----
+      --------ACK>------>
+      <------SYN/ACK-----
+      <-----ESTABLISHED--->
+
+
+
+
+netstat -n -p tcp | findstr '445'
+
+
+TASK3: create a cybersecurity incident response:
+
+http:2
+
+TASK4: FUNDAMENTALS OF CYBERSECURITY:
+
+1. CompTIA Security+ (SY0-701)
+2. ISC Certified in Cybersecurity (CC)
+3. Cisco 
+
+
+
+
+Step 1: secure the Individual.
+
+
+TASK 5: BLOCK ALL PORN SITES BY BLOCKING SOURCE IP ADDRESS
+
+config t
+NO ip access-list standard NOPORN
+ip access-list standard NOPORN
+DENY 66.254.0.0 0.0.255.255
+deny 161.49.0.0 0.0.255.255
+DENY 104.21.0.0 0.0.255.255
+DENY 68.235.0.0 0.0.255.255
+DENY 104.17.0.0 0.0.255.255
+DENY 88.208.0.0 0.0.255.255
+DENY 208.77.0.0 0.0.255.255
+DENY 172.67.0.0 0.0.255.255
+DENY 13.33.0.0 0.0.255.255
+Permit Any
+Int Gi 1
+ ip access-group NOPORN in
+end
+
+
+Task: Block All Pornsites
+config t
+no access-list 25
+access-list 25 DENY 66.254.0.0 0.0.255.255
+access-list 25 DENY 104.21.0.0 0.0.255.255
+access-list 25 DENY 68.235.0.0 0.0.255.255
+access-list 25 DENY 104.17.0.0 0.0.255.255
+access-list 25 DENY 88.208.0.0 0.0.255.255
+access-list 25 DENY 208.77.0.0 0.0.255.255
+access-list 25 DENY 172.67.0.0 0.0.255.255
+access-list 25 deny 13.33.0.0 0.0.255.255
+access-list 25 permit Any
+Int gi 1
+ ip access-group 25 in
+end
+
+
+Task: Block Schools
+config t
+NO ip access-list standard NOISKUL
+ip access-list standard NOISKUL
+DENY   172.67.14.0     0.0.255.255
+DENY   50.6.160.0      0.0.255.255
+DENY   184.168.125.0   0.0.255.255
+DENY   155.137.92.0    0.0.255.255
+DENY   74.91.223.0     0.0.255.255
+Permit Any
+Int Gi 1
+ ip access-group NOISKUL in
+end
+
+
+
+
+Task: Block TORRENT Download
+
+config t
+NO ip access-list standard NOTORS
+ip access-list standard NOTORS
+DENY   162.159.0.0   0.0.255.255
+DENY   172.67.0.0   0.0.255.255
+DENY   76.223.0.0   0.0.255.255
+DENY   104.21.0.0  0.0.255.255
+DENY   104.21.0.0  0.0.255.255
+DENY   104.26.0.0  0.0.255.255
+DENY   95.211.0.0  0.0.255.255
+DENY   104.21.0.0   0.0.255.255
+DENY   84.32.0.0   0.0.255.255
+DENY   13.248.0.0   0.0.255.255
+Permit Any
+Int Gi 1
+ ip access-group NOTORS in
+end
+	
+
+TASK6: EXTENDED ACCESS-LIST FIREWALL POLICY: TEMPLATE.
+
+         PROTOCOL     HACKER    VICTIM    PORT
+   DATA:TCP,VOIP:UDP  ANY       HOST      
+
+policy1: CREATE A POLICY TO ALLOW ONLY
+bet10.com open http, https
+bet11.com open ping, https, dns
+
+config t
+NO ip access-list extended FP1
+ip access-list extended FP1
+ permit tcp any host bet10.com eq 80 
+ permit tcp any host bet10.com eq 443
+ permit icmp any host bet11.com 
+ permit tcp any host bet11.com eq 443
+ permit tcp any host bet11.com eq 53
+ Int gi 3
+  ip access-group FP1 in 
+  do sh ip access-list FP1
+
+
+
+
+policy2: 
+bet10.com open ping,http,dns
+bet11.com open ssh,dns, https = 6 lines
+
+config t
+NO ip access-list extended FP2
+ip access-list extended FP2
+ permit icmp any host bet10.com 
+ permit tcp any host bet10.com eq 80
+ permit tcp any host bet10.com eq 53
+ permit tcp any host bet11.com eq 22
+ permit tcp any host bet11.com eq 53
+ permit tcp any host bet11.com eq 443
+ Int gi 2
+  ip access-group FP2 in 
+  do sh ip access-list FP2
+
+
+policy3: CREATE A POLICY TO ALLOW ONLY 
+bet10.com IS A VOIP provider: h323, sccp, sip, sip-tls
+bet11.com Gaming Server: ssh,dns,http,https == 8 lines
+
+config t
+NO ip access-list extended FP3
+ip access-list extended FP3 
+ permit tcp any host bet10.com eq 1720
+ permit tcp any host bet10.com eq 5060
+ permit tcp any host bet10.com eq 2000
+ permit tcp any host bet10.com eq 5061
+ permit tcp any host bet11.com eq 22
+ permit tcp any host bet11.com eq 53
+ permit tcp any host bet11.com eq 443
+ permit tcp any host bet11.com eq 80
+ Int gi 3
+  ip access-group FP3 in 
+  do sh ip access-list FP3
+
+
+task 7: NAT 
+
+sudo su
+ifconfig eth0 192.168.103.22 netmask 255.255.255.0 up
+route add default gw 192.168.103.11
+ping 192.168.103.11
+
+spirit2004
+
