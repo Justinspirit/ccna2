@@ -1,0 +1,117 @@
+C1-C2
+ conf t
+ int ra e0/1-3
+ description Connection to C1
+ switchport trunk encap dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 1-100
+
+ !Etherchannelling
+ @C1
+ channel-group 40 mode active
+ channel-protocol lacp 
+ end 
+ show etherchannel summary 
+
+C2-C1
+ conf t
+ int ra e0/1-3
+ description Connection to C1
+ switchport trunk encap dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 1-100
+
+ !Etherchannelling
+ @C1
+ channel-group 40 mode active
+ channel-protocol lacp 
+ end 
+ show etherchannel summary 
+
+------------------------------------------------------
+ 
+C1-D1
+ conf t
+ int ra e1/1-2
+ description Connection to D1
+ switchport trunk encap dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan all
+
+ !Etherchannelling
+ @C1
+ channel-group 21 mode active
+ channel-protocol lacp 
+ end 
+ show etherchannel summary 
+
+------------------------------------------------------------
+
+C1-D2
+ conf t
+ int ra e2/1-2
+ description Connection to D2
+ switchport trunk encap dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan all
+
+ !Etherchannelling
+ @C1
+ channel-group 12 mode active
+ channel-protocol lacp 
+ end 
+ show etherchannel summary 
+
+-------------------------------------------------------------------
+
+D1-C1
+ conf t
+ int ra e1/0, e1/3
+ description Connection to C1
+ switchport trunk encap dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan all
+
+ !Etherchannelling
+ @C1
+ channel-group 11 mode active
+ channel-protocol lacp 
+ end 
+ show etherchannel summary 
+
+D1-C1
+ conf t
+ int ra e2/0, e2/3
+ description Connection to C2
+ switchport trunk encap dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan all
+
+ !Etherchannelling
+ @C1
+ channel-group 21 mode active
+ channel-protocol lacp 
+ end 
+ show etherchannel summary 
+
+--------------------------------------------------------------------
+
+D2-C1
+ conf t
+ int ra e2/0, e2/3
+ description Connection to C2
+ switchport trunk encap dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan all
+
+ !Etherchannelling
+ @C1
+ channel-group 21 mode active
+ channel-protocol lacp 
+ end 
+ show etherchannel summary 
+
+
+
+
+

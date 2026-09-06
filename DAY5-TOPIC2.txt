@@ -1,0 +1,165 @@
+IPV6 Addressing:
+- IPv4 is 32bits vs IPv6 is 128bits
+- IPv4 has 4 Octets (3dots) vs IPv6 has 7 (Colons)
+
+ex. 1111:0123:0012:0001:abcd:0abc:9891:abcd
+
+It allows zero-ommision
+Continous zeroes can be eliminated, in hte place of full zeroes, simply use a double-colon(::)
+
+Rule 1- leading Zero Ommision
+before 1111: 0123: 0012: 0001: abcd: 0abc: 9891: abcd
+after  1111: 123: 12: 1: abcd: abc: 9891: abcd
+
+Rule 2 - Continous Zero Omission
+before: 1111 : 0123 : 0000 : 0000: abcd : abcd : abcd :1000
+after:  1111 :  123        ::      abcd : abcd : abcd :1000
+
+another before : 1234:0000:0000:0000:abcd:0000:0000:0000
+after:           1234        ::      abcd:  0 :  0 :  0
+
+Rule 3 - Discontinous Zero Ommision 
+before: 1111: 0000 : 0000 : abcd : 0101 : 0000 : 1230 : f00d
+after:  1111:     ::        abcd : 101  :   0  : 1230 : f00d
+
+you may address IPv6 like the previously common ways in IPv4
+ipv4: 192.168.1.10/24
+ipv6: 192:168:1::10/64 (originally: 0192:0168:0001:0000:0000:0000:0000:0010/64
+
+1.a:c::/64
+2.::/0 = [IPv6 defaultroute]
+3.fe80::a:0:0:f/64
+4. 2002:6500:0:3000::/64
+5. ::1/128 = [IPv6 loopback]
+6. ff00::beef:a00a:aa0:0:0/8 
+7. 2001:db8:1::ab9:C0A8:102/64
+8. 1200:0:130F::9C0:876A:1008/64
+9. 2041:1000:140F::8758:18/96
+10. 2001:4860:4860::8888/128 [Google IPv6 DNS] 
+
+
+-------------IPv6--Subnetting--------------------------------
+
+IPv6 Subnetting:
+
+Design the Accenture Network using face:cafe:fafa:fefe::/64
+to 50 offices. 
+
+Rivan Method CAI 
+ConvertMO: 50 office = 6 bits
+AddMo: /64 + /6 bits = /70
+IChambaMoPattern: 
+
+                                     8 4 2 1     8 4 2 1    8 4 2 1   8 4 2 1
+                                     0 0 1 0     0 1
+1st Office: face:cafe:fafa:fefe::/70
+2nd Office: face:cafe:fafa:fefe:0400::/70
+3rd Office: face:cafe:fafa:fefe:0800::/70
+4rd Office: face:cafe:fafa:fefe:0C00::/70
+5th Office: face:cafe:fafa:fefe:1C00::/70
+6th Office: face:cafe:fafa:fefe:1400::/70
+7th Office: face:cafe:fafa:fefe:1800::/70
+8th Office: face:cafe:fafa:fefe:1C00::/70
+9th Office: face:cafe:fafa:fefe:2000::/70
+10th Office: face:cafe:fafa:fefe:2000::/70
+
+or Ipasok (must be determine the HEXTET, HEX DIGIT, Increment)
+/70 -  5th Hextet, 2nd Hex, 4i
+:0000:
+:0400:
+:0800:
+:0c00:
+:1000:
+:1400:
+:1800:
+:1c00:
+:2000:
+:2400:
+:2800:
+:2C00:
+
+Implementation: 
+conf t
+ ipv6 unicast-routing
+ int lo1
+ ipv6 address face:cafe:fafa:fefe::1/70
+ int lo2
+ ipv6 address face:cafe:fafa:fefe:0400::1/70
+ int lo3
+ ipv6 address face:cafe:fafa:fefe:0800::1/70
+ int lo4
+ ipv6 address face:cafe:fafa:fefe:1c00::1/70
+ int lo5
+ ipv6 address face:cafe:fafa:fefe:1000::1/70 
+ int lo6
+ ipv6 address face:cafe:fafa:fefe:1400::1/70
+end
+ 
+
+!Another One (Home Exercise) 
+Deisgn an IPv6 Netowrk with abcd:babe:fade:f0f0::/64 to 22 offices
+
+CISCO SWITCHING 
+
+NATIVE VLAN = VLAN 1
+
+FAKE DEATH OF SWITCH
+
+conf t 
+ vlan 123
+ name BUDOL-VLAN
+ exit
+ do show vlan br 
+
+ int range fa0/1-12
+ switchport mode access
+ switchport access vlan 1
+ exit
+ do sho vlan br
+
+ no vlan 123
+
+ !undo port orphans
+int range fa0/1-12
+ switchport mode access
+ switchport access vlan 1
+ exit
+ do sho vlan br
+
+ 
+
+
+The 802.1 Powers of Cisco Switches:
+
+ 802.1Q (Qupid) - Trunk Ports
+
+ !Configure Trunk Ports CoreTaas/Corebaba 
+ conf t 
+  int range fa0/10-12
+  switchport mode trunk 
+  end
+
+ 802.1D (Darna) - Spanning-Tree Protocol 
+ @CoreTAAS
+
+ sh spanning-tree vlan 1 
+
+ @CoreTAAS/Baba
+
+ no spanning-tree vlan 1-100
+ spanning-tree vlan 1 - 100  !return to normal
+
+ !Make CoreTAAS as Root Bridge
+
+ @CoreTaas
+ conf t 
+  spanning-tree vlan 1-100 root primary
+ 
+ @CoreBaba
+ conf t
+  spanning-tree vlan 1-100 root secondary
+
+ 
+
+
+
